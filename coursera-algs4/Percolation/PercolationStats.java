@@ -56,5 +56,5 @@ public class PercolationStats {
         StdOut.printf("mean                    = %.7f\n",stats.mean());
         StdOut.printf("stddev                  = %.15f\n",stats.stddev());
         StdOut.printf("95%% confidence interval = %.15f, %.15f\n",stats.confidenceLo(),stats.confidenceHi());
-    }   // test client (described below)
+    }   // test client 
 }
