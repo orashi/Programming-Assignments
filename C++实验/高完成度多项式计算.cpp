@@ -11,7 +11,6 @@ public:
 
 class PNode {
 	friend class PoQueue;
-	friend class Poly;
 public:
 	PNode(datas a,PNode *p) :data(a), next(p) {}
 private:
@@ -20,12 +19,8 @@ private:
 };
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class PoQueue {
-	friend class Poly;
-	friend PoQueue addterm(PoQueue a, PoQueue &b, PoQueue &r);
 	friend PoQueue addterm(PoQueue a, PoQueue b);
-	friend PoQueue subterm(PoQueue a, PoQueue &b, PoQueue &r);
 	friend PoQueue subterm(PoQueue a, PoQueue b);
-	friend PoQueue multtermAll(datas a, PoQueue& b, PoQueue &r);
 	friend PoQueue multtermAll(datas a, PoQueue& b);
 	friend PoQueue multterm(PoQueue a, PoQueue b);
 private:
@@ -55,9 +50,21 @@ public:
 	}
 	void enQueue(datas);
 	PoQueue& enIt(int ci, int xi);
+	PoQueue& show();
 };
+PoQueue& PoQueue::show() {
+	PNode* tp = first;
+	for (int i = N; i > 0; i--)
+	{
+		cout << tp->data.xi << "x^" << tp->data.ci;
+		tp = tp->next;
+		if (i != 1)
+			cout << '+';
+	}
+	cout << endl;
+	return *this;
 
-
+}
 void PoQueue::enQueue(datas a) {
 	PNode* oldlast = last;
 	last = new PNode(a, NULL);
@@ -89,166 +96,80 @@ PoQueue& PoQueue::enIt(int xi, int ci) {
 	return *this;
 }
 
-PoQueue addterm(PoQueue a, PoQueue &b, PoQueue &r) {
-	if (a.isEmpty()&& b.isEmpty())	return r;
-	else if (b.isEmpty()) { 
-		r.enQueue(a.deQueue()); 
-		return addterm(a, b, r);
-	
-	}
-	else if (a.isEmpty()) { 
-		r.enQueue(b.deQueue()); 
-		return addterm(a, b, r);
-	}
-	else {
-		datas as = a.deQueue(), bs = b.deQueue();
-		if (as.ci>bs.ci)
-		{
-			r.enQueue(as);
-			b.deenQueue(bs);
-			return addterm(a, b, r);
-		}
-		else 	if (as.ci<bs.ci)
-		{
-			r.enQueue(bs);
-			a.deenQueue(as);
-			return addterm(a, b, r);
-		}
-		else
-		{
-			datas oh(as.ci, as.xi + bs.xi);
-			r.enQueue(oh);
-			return addterm(a, b, r);
-		}
-	}
-	return r;
-
-}
 PoQueue addterm(PoQueue a, PoQueue b) {
 	PoQueue result;
-	if (a.isEmpty() && b.isEmpty())	return result;
-	else if (b.isEmpty()) {
-		result.enQueue(a.deQueue());
-		return addterm(a, b, result);
-
-	}
-	else if (a.isEmpty()) {
-		result.enQueue(b.deQueue());
-		return addterm(a, b, result);
-	}
-	else {
-		datas as = a.deQueue(), bs = b.deQueue();
-		if(as.ci>bs.ci)
-		{
-			result.enQueue(as);
-			b.deenQueue(bs);
-			return addterm(a, b, result);
+	while (1) {
+		if (a.isEmpty() && b.isEmpty())	return result;
+		else if (b.isEmpty()) {
+			result.enQueue(a.deQueue());
 		}
-		else 	if (as.ci<bs.ci)
-		{
-			result.enQueue(bs);
-			a.deenQueue(as);
-			return addterm(a, b, result);
+		else if (a.isEmpty()) {
+			result.enQueue(b.deQueue());
 		}
-		else
-		{
-			datas oh(as.ci, as.xi + bs.xi);
-			result.enQueue(oh);
-			return addterm(a, b, result);
+		else {
+			datas as = a.deQueue(), bs = b.deQueue();
+			if (as.ci>bs.ci)
+			{
+				result.enQueue(as);
+				b.deenQueue(bs);
+			}
+			else 	if (as.ci<bs.ci)
+			{
+				result.enQueue(bs);
+				a.deenQueue(as);
+			}
+			else
+			{
+				datas oh(as.ci, as.xi + bs.xi);
+				result.enQueue(oh);
+			}
 		}
 	}
-	return result;
-}
-
-PoQueue subterm(PoQueue a, PoQueue &b, PoQueue &r) {
-	if (a.isEmpty() && b.isEmpty())	return r;
-	else if (b.isEmpty()) {
-		r.enQueue(a.deQueue());
-		return addterm(a, b, r);
-
-	}
-	else if (a.isEmpty()) {
-		r.enQueue(b.deQueue());
-		return addterm(a, b, r);
-	}
-	else {
-		datas as = a.deQueue(), bs = b.deQueue();
-		if (as.ci>bs.ci)
-		{
-			r.enQueue(as);
-			b.deenQueue(bs);
-			return addterm(a, b, r);
-		}
-		else 	if (as.ci<bs.ci)
-		{
-			r.enQueue(bs);
-			a.deenQueue(as);
-			return addterm(a, b, r);
-		}
-		else
-		{
-			datas oh(as.ci, as.xi + bs.xi);
-			r.enQueue(oh);
-			return addterm(a, b, r);
-		}
-	}
-	return r;
-
+	
 }
 PoQueue subterm(PoQueue a, PoQueue b) {
 	datas fuhao(0, -1);
 	PoQueue newb(multtermAll(fuhao, b));
 	PoQueue result;
-	if (a.isEmpty() && newb.isEmpty())	return result;
-	else if (newb.isEmpty()) {
-		result.enQueue(a.deQueue());
-		return addterm(a, newb, result);
-	}
-	else if (a.isEmpty()) {
-		result.enQueue(newb.deQueue());
-		return addterm(a, newb, result);
-	}
-	else {
-		datas as = a.deQueue(), bs = newb.deQueue();
-		if (as.ci>bs.ci)
-		{
-			result.enQueue(as);
-			newb.deenQueue(bs);
-			return addterm(a, newb, result);
+	while (1) {
+		if (a.isEmpty() && newb.isEmpty())	return result;
+		else if (newb.isEmpty()) {
+			result.enQueue(a.deQueue());
 		}
-		else 	if (as.ci<bs.ci)
-		{
-			result.enQueue(bs);
-			a.deenQueue(as);
-			return addterm(a, newb, result);
+		else if (a.isEmpty()) {
+			result.enQueue(newb.deQueue());
 		}
-		else
-		{
-			datas oh(as.ci, as.xi + bs.xi);
-			result.enQueue(oh);
-			return addterm(a, newb, result);
+		else {
+			datas as = a.deQueue(), bs = newb.deQueue();
+			if (as.ci>bs.ci)
+			{
+				result.enQueue(as);
+				newb.deenQueue(bs);
+			}
+			else 	if (as.ci<bs.ci)
+			{
+				result.enQueue(bs);
+				a.deenQueue(as);
+			}
+			else
+			{
+				datas oh(as.ci, as.xi + bs.xi);
+				result.enQueue(oh);
+			}
 		}
 	}
-	return result;
-}
-
-
-PoQueue multtermAll(datas a, PoQueue &b, PoQueue &r) {
-	if (b.isEmpty())
-		return r;
-	datas ee = b.deQueue();
-	datas oh(a.ci + ee.ci, a.xi * ee.xi);
-	r.enQueue(oh);
-	return multtermAll(a, b, r);
+	
 }
 PoQueue multtermAll(datas a, PoQueue &b) {
 	PoQueue result;
-	if (b.isEmpty())
-		return result;
-	datas ee = b.deQueue();
-	datas oh(a.ci + ee.ci, a.xi * ee.xi);
-	result.enQueue(oh);
-	return multtermAll(a, b,result);
+	while (1)
+	{
+		if (b.isEmpty())
+			return result;
+		datas ee = b.deQueue();
+		datas oh(a.ci + ee.ci, a.xi * ee.xi);
+		result.enQueue(oh);
+	}
 }
 PoQueue multterm(PoQueue a, PoQueue b) {
 	static PoQueue empty;
@@ -261,59 +182,20 @@ PoQueue multterm(PoQueue a, PoQueue b) {
 		return addterm(multtermAll(temp, tempb), multterm(a, b));
 	}
 }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-class Poly {
-	friend Poly addPoly(Poly a, Poly b);
-	friend Poly multPoly(Poly a, Poly b);
-	friend Poly subPoly(Poly a, Poly b);
-private:
-	PoQueue w;
-
-public:
-	Poly(PoQueue ps) :w(ps) {};
-	Poly& show();
-
-};
-Poly& Poly::show() {
-	PNode* tp = w.first;
-	for (int i = w.N; i > 0; i--)
-	{
-		cout << tp->data.xi << "x^" << tp->data.ci;
-		tp = tp->next;
-		if (i != 1)
-			cout << '+';
-	}
-	cout << endl;
-	return *this;
-
-}
-Poly addPoly(Poly a, Poly b) {
-	Poly newp(addterm(a.w, b.w));
-	return newp;
-}
-Poly multPoly(Poly a, Poly b) {
-	Poly newp(multterm(a.w, b.w));
-	return newp;
-}
-Poly subPoly(Poly a, Poly b) {
-	Poly newp(subterm(a.w, b.w));
-	return newp;
-}
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////
 /*
 API:PoQueue：
+
+
 PoQueue& PoQueue::enIt(int xi, int ci）  次数由大到小
-Poly：
-Poly addPoly(Poly a, Poly b)
-Poly subPoly(Poly a, Poly b)
-Poly multPoly(Poly a, Poly b)
-Poly& Poly::show()
+PoQueue addterm(PoQueue a, PoQueue b)
+PoQueue subterm(PoQueue a, PoQueue b)
+PoQueue multterm(PoQueue a, PoQueue b)
+PoQueue& PoQueue::show()
 */
 void main(void) {
 	PoQueue a, b,c;
 	a.enIt(2,1); b.enIt(2,5).enIt(3,4).enIt(2,3),c.enIt(2,2);//enIt 次数由大到小
-	Poly aa(a), bb(b),cc(c);
-	subPoly(multPoly(addPoly(aa, bb).show(), aa).show(),cc).show();
+	subterm(multterm(addterm(a, b).show(), a).show(),c).show();
 }
