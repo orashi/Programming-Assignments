@@ -2,10 +2,16 @@
 
 using namespace std;
 
-
 class datas {
-public:
+	friend class PNode;
+	friend class PoQueue;
+	friend PoQueue addterm(PoQueue a, PoQueue b);
+	friend PoQueue subterm(PoQueue a, PoQueue b);
+	friend PoQueue multterm(PoQueue a, PoQueue b);
+	friend PoQueue multtermAll(datas a, PoQueue b);
+private:
 	int ci, xi;
+public:
 	datas(int a,int b):ci(a),xi(b){}
 };
 
@@ -21,7 +27,7 @@ private:
 class PoQueue {
 	friend PoQueue addterm(PoQueue a, PoQueue b);
 	friend PoQueue subterm(PoQueue a, PoQueue b);
-	friend PoQueue multtermAll(datas a, PoQueue& b);
+	friend PoQueue multtermAll(datas a, PoQueue b);
 	friend PoQueue multterm(PoQueue a, PoQueue b);
 private:
 	void deenQueue(datas);
@@ -160,7 +166,7 @@ PoQueue subterm(PoQueue a, PoQueue b) {
 	}
 	
 }
-PoQueue multtermAll(datas a, PoQueue &b) {
+PoQueue multtermAll(datas a, PoQueue b) {
 	PoQueue result;
 	while (1)
 	{
@@ -192,6 +198,7 @@ PoQueue& PoQueue::enIt(int xi, int ci）  次数由大到小
 PoQueue addterm(PoQueue a, PoQueue b)
 PoQueue subterm(PoQueue a, PoQueue b)
 PoQueue multterm(PoQueue a, PoQueue b)
+PoQueue multtermAll(datas a, PoQueue b)
 PoQueue& PoQueue::show()
 */
 void main(void) {
