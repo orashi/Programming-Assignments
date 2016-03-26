@@ -32,6 +32,7 @@ class PoQueue {
 private:
 	void deenQueue(datas);
 	datas deQueue();
+	void enQueue(datas);
 	int size() { return N; }
 	bool isEmpty() { return N == 0; }
 	PNode *first,*last;
@@ -54,7 +55,6 @@ public:
 			delete tp;
 		}
 	}
-	void enQueue(datas);
 	PoQueue& enIt(int ci, int xi);
 	PoQueue& show();
 };
@@ -200,6 +200,8 @@ PoQueue subterm(PoQueue a, PoQueue b)
 PoQueue multterm(PoQueue a, PoQueue b)
 PoQueue multtermAll(datas a, PoQueue b)
 PoQueue& PoQueue::show()
+
+
 */
 void main(void) {
 	PoQueue a, b,c;
