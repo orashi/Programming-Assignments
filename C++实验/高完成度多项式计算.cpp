@@ -6,7 +6,7 @@ class datas {
 	friend class PNode;
 	friend class PoQueue;
 	friend PoQueue addterm(PoQueue a, PoQueue b);
-	friend PoQueue subterm(PoQueue a, PoQueue b);
+	friend PoQueue subterm(PoQueue &a, PoQueue b);
 	friend PoQueue multterm(PoQueue a, PoQueue b);
 	friend PoQueue multtermAll(datas a, PoQueue b);
 private:
@@ -26,7 +26,7 @@ private:
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class PoQueue {
 	friend PoQueue addterm(PoQueue a, PoQueue b);
-	friend PoQueue subterm(PoQueue a, PoQueue b);
+	friend PoQueue subterm(PoQueue &a, PoQueue b);
 	friend PoQueue multtermAll(datas a, PoQueue b);
 	friend PoQueue multterm(PoQueue a, PoQueue b);
 private:
@@ -133,38 +133,10 @@ PoQueue addterm(PoQueue a, PoQueue b) {
 	}
 	
 }
-PoQueue subterm(PoQueue a, PoQueue b) {
+PoQueue subterm(PoQueue &a, PoQueue b) {
 	datas fuhao(0, -1);
 	PoQueue newb(multtermAll(fuhao, b));
-	PoQueue result;
-	while (1) {
-		if (a.isEmpty() && newb.isEmpty())	return result;
-		else if (newb.isEmpty()) {
-			result.enQueue(a.deQueue());
-		}
-		else if (a.isEmpty()) {
-			result.enQueue(newb.deQueue());
-		}
-		else {
-			datas as = a.deQueue(), bs = newb.deQueue();
-			if (as.ci>bs.ci)
-			{
-				result.enQueue(as);
-				newb.deenQueue(bs);
-			}
-			else 	if (as.ci<bs.ci)
-			{
-				result.enQueue(bs);
-				a.deenQueue(as);
-			}
-			else
-			{
-				datas oh(as.ci, as.xi + bs.xi);
-				result.enQueue(oh);
-			}
-		}
-	}
-	
+	return addterm(a, newb);
 }
 PoQueue multtermAll(datas a, PoQueue b) {
 	PoQueue result;
@@ -196,7 +168,7 @@ API:PoQueue：
 
 PoQueue& PoQueue::enIt(int xi, int ci）  次数由大到小
 PoQueue addterm(PoQueue a, PoQueue b)
-PoQueue subterm(PoQueue a, PoQueue b)
+PoQueue subterm(PoQueue &a, PoQueue b)
 PoQueue multterm(PoQueue a, PoQueue b)
 PoQueue multtermAll(datas a, PoQueue b)
 PoQueue& PoQueue::show()
@@ -205,6 +177,8 @@ PoQueue& PoQueue::show()
 */
 void main(void) {
 	PoQueue a, b,c;
-	a.enIt(2,1); b.enIt(2,5).enIt(3,4).enIt(2,3),c.enIt(2,2);//enIt 次数由大到小
+	a.enIt(2, 1); 
+	b.enIt(2, 5).enIt(3, 4).enIt(2, 3); 
+	c.enIt(2, 2);//enIt 次数由大到小
 	subterm(multterm(addterm(a, b).show(), a).show(),c).show();
 }
